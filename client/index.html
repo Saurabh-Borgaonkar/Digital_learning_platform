@@ -1,93 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>NexLearn</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <script src="https://cdn.tailwindcss.com"></script>
+<title>NexLearn</title>
 
-        <link
-            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-            rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 
-        <style>
-        body{
-            font-family:'Poppins',sans-serif;
-        }
-    </style>
-    </head>
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
 
-    <body class="bg-[#FDF8F3]">
+<script src="https://unpkg.com/lucide@latest"></script>
 
-        <nav class="bg-[#FDF8F3] shadow-sm border-b">
+<style>
 
-            <div
-                class="max-w-7xl mx-auto flex items-center justify-between px-8 py-4">
+body{
+font-family:'Poppins',sans-serif;
+background:#edd6c2;
+}
 
-                <!-- Logo -->
+</style>
 
-                <div class="flex items-center gap-3">
+</head>
 
-                    <img src="logo.png" class="w-10">
+<body>
 
-                    <h1 class="text-3xl font-bold">
+<!-- ================= NAVBAR ================= -->
 
-                        <span class="text-green-900">Nex</span><span
-                            class="text-lime-500">Learn</span>
+<header class="sticky top-0 z-50 bg-[#FDF8F3] shadow-sm">
 
-                    </h1>
+<div class="max-w-8xl mx-auto px-6 border-2">
 
-                </div>
+<div class="flex items-center lg:justify-evenly justify-between h-20">
 
-                <!-- Menu -->
+<!-- Logo -->
 
-                <ul
-                    class="hidden lg:flex items-center gap-10 text-gray-700 font-medium">
+<a href="#" class="">
 
-                    <li><a href="#"
-                            class="hover:text-green-600 transition">Home</a></li>
+<img src="assets/logo.png"
+class="w-13 h-12 object-contain">
 
-                    <li><a href="#"
-                            class="hover:text-green-600 transition">Courses</a></li>
 
-                    <li><a href="#"
-                            class="hover:text-green-600 transition">Categories</a></li>
+</a>
 
-                    <li><a href="#"
-                            class="hover:text-green-600 transition">Instructors</a></li>
+<!-- Desktop Menu -->
 
-                    <li><a href="#"
-                            class="hover:text-green-600 transition">About</a></li>
+<nav class="hidden lg:flex items-center gap-8">
 
-                    <li><a href="#"
-                            class="hover:text-green-600 transition">Contact</a></li>
+<a href="#" class="hover:text-lime-600 font-medium transition">
+Home
+</a>
 
-                </ul>
+<a href="#" class="hover:text-lime-600 font-medium transition">
+Courses
+</a>
 
-                <!-- Buttons -->
+<a href="#" class="hover:text-lime-600 font-medium transition">
+Categories
+</a>
 
-                <div class="flex items-center gap-4">
+<a href="#" class="hover:text-lime-600 font-medium transition">
+Instructors
+</a>
 
-                    <button
-                        class="text-gray-700 font-medium hover:text-green-600">
+<a href="#" class="hover:text-lime-600 font-medium transition">
+About
+</a>
 
-                        Login
+<a href="#" class="hover:text-lime-600 font-medium transition">
+Contact
+</a>
 
-                    </button>
+</nav>
 
-                    <button
-                        class="bg-lime-500 hover:bg-lime-600 text-black font-semibold px-6 py-3 rounded-lg transition">
+<!-- Right Buttons -->
 
-                        Sign Up
+<div class="hidden lg:flex items-center gap-4">
 
-                    </button>
+<button>
 
-                </div>
+<i data-lucide="search"></i>
 
-            </div>
+</button>
 
-        </nav>
+<a href="#"
+class="font-medium hover:text-lime-600">
 
-    </body>
+Login
+
+</a>
+
+<a href="#"
+
+class="bg-lime-500 hover:bg-lime-600
+px-6 py-3 rounded-xl
+font-semibold
+transition">
+
+Get Started
+
+</a>
+
+</div>
+
+<!-- Mobile Button -->
+
+<button
+id="menuBtn"
+class="lg:hidden">
+
+<i data-lucide="menu"></i>
+
+</button>
+
+</div>
+
+</div>
+
+<!-- Mobile Menu -->
+
+<div
+id="mobileMenu"
+
+class="hidden lg:hidden bg-white border-t">
+
+<div class="flex flex-col p-6 space-y-5">
+
+<a href="#">Home</a>
+
+<a href="#">Courses</a>
+
+<a href="#">Categories</a>
+
+<a href="#">Instructors</a>
+
+<a href="#">About</a>
+
+<a href="#">Contact</a>
+
+<hr>
+
+<a href="#">Login</a>
+
+<a href="#"
+
+class="bg-lime-500
+text-center
+rounded-xl
+py-3
+font-semibold">
+
+Get Started
+
+</a>
+
+</div>
+
+</div>
+
+</header>
+
+<script src="js/navbar.js"></script>
+
+<script>
+
+lucide.createIcons();
+
+</script>
+
+</body>
 </html>
