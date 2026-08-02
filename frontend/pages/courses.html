@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses — NexLearn</title>
+  <meta name="description" content="Browse all available courses on NexLearn. Filter by category, level and more.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>body { font-family: 'Poppins', sans-serif; }</style>
+</head>
+<body class="bg-[#FDF8F3]">
+
+<!-- Navbar -->
+<header class="sticky top-0 z-50 bg-[#FDF8F3] shadow-sm">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between h-20">
+      <a href="/pages/index.html">
+        <img src="../assets/logo.png" alt="NexLearn" class="h-12 w-auto object-contain">
+      </a>
+      <nav class="hidden lg:flex items-center gap-8 text-gray-700 font-medium">
+        <a href="/pages/index.html" class="hover:text-lime-600 transition">Home</a>
+        <a href="/pages/courses.html" class="text-lime-600 font-semibold">Courses</a>
+        <a href="#" class="hover:text-lime-600 transition">Instructors</a>
+        <a href="#" class="hover:text-lime-600 transition">About</a>
+      </nav>
+      <div class="hidden lg:flex items-center gap-4">
+        <a href="/pages/login.html" id="navLoginLink" class="font-medium text-gray-700 hover:text-lime-600 transition">Login</a>
+        <a href="/pages/register.html" id="navGetStartedLink" class="bg-lime-500 hover:bg-lime-600 text-black px-6 py-2.5 rounded-xl font-semibold transition">Get Started</a>
+        <div id="navUserMenu" class="hidden relative group">
+          <button class="flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-black px-4 py-2 rounded-xl font-semibold transition">
+            <i data-lucide="user" class="w-4 h-4"></i>
+            <span id="navUserName">User</span>
+          </button>
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+            <a href="#" id="dashboardLink" class="block px-4 py-3 text-gray-700 hover:bg-lime-50 rounded-t-xl">Dashboard</a>
+            <hr class="border-gray-100">
+            <button onclick="logout()" class="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 rounded-b-xl">Logout</button>
+          </div>
+        </div>
+      </div>
+      <button id="menuBtn" class="lg:hidden"><i data-lucide="menu" class="w-6 h-6"></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- Page Header -->
+<section class="bg-white py-12 border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-6">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">All Courses</h1>
+    <p class="text-gray-500 mt-2">Expand your knowledge with our expert-led courses.</p>
+
+    <!-- Search & Filter -->
+    <div class="flex flex-col md:flex-row gap-4 mt-8">
+      <div class="relative flex-1">
+        <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+          <i data-lucide="search" class="w-5 h-5"></i>
+        </span>
+        <input type="text" id="searchInput" placeholder="Search courses..."
+          class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-400 text-sm bg-white">
+      </div>
+      <select id="categoryFilter" class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-400 text-sm bg-white text-gray-700">
+        <option value="">All Categories</option>
+        <option value="Web Development">Web Development</option>
+        <option value="Programming">Programming</option>
+        <option value="Data Science">Data Science</option>
+        <option value="Artificial Intelligence">Artificial Intelligence</option>
+        <option value="Design">Design</option>
+        <option value="Business">Business</option>
+      </select>
+      <select id="levelFilter" class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-400 text-sm bg-white text-gray-700">
+        <option value="">All Levels</option>
+        <option value="Beginner">Beginner</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="Advanced">Advanced</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<!-- Courses Grid -->
+<section class="py-12">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Loading State -->
+    <div id="loadingState" class="text-center py-20">
+      <div class="inline-block w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-gray-500 mt-4">Loading courses...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-20">
+      <div class="text-6xl mb-4">📭</div>
+      <h3 class="text-xl font-semibold text-gray-700">No courses found</h3>
+      <p class="text-gray-500 mt-2">Try adjusting your search or filters.</p>
+    </div>
+
+    <!-- Courses -->
+    <div id="coursesGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white pt-12 pb-6">
+  <div class="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm">
+    © 2026 NexLearn. All Rights Reserved.
+  </div>
+</footer>
+
+<script src="../js/api.js"></script>
+<script src="../js/navbar.js"></script>
+<script>
+  lucide.createIcons();
+
+  let allCourses = [];
+
+  const levelBadge = (level) => {
+    const colors = {
+      Beginner: 'bg-green-100 text-green-700',
+      Intermediate: 'bg-yellow-100 text-yellow-700',
+      Advanced: 'bg-red-100 text-red-700'
+    };
+    return `<span class="${colors[level] || 'bg-gray-100 text-gray-700'} px-3 py-1 rounded-full text-xs font-medium">${level}</span>`;
+  };
+
+  const defaultThumbnails = [
+    'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80',
+    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=80',
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=80',
+    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=80',
+    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&q=80',
+  ];
+
+  function renderCourse(course, index) {
+    const thumb = course.thumbnail || defaultThumbnails[index % defaultThumbnails.length];
+    const instructor = course.instructor?.name || 'NexLearn';
+    const user = getUser();
+    const enrollUrl = user ? `/pages/course-detail.html?id=${course._id}` : '/pages/login.html';
+
+    return `
+      <div class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden group">
+        <div class="relative overflow-hidden">
+          <img src="${thumb}" alt="${course.title}" class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
+            onerror="this.src='https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80'">
+        </div>
+        <div class="p-6">
+          <span class="text-lime-600 font-medium text-sm">${course.category}</span>
+          <h3 class="text-lg font-bold mt-2 text-gray-900">${course.title}</h3>
+          <p class="text-gray-500 text-xs mt-1">by ${instructor}</p>
+          <div class="flex justify-between text-gray-500 text-sm mt-4">
+            <span>⭐ ${course.rating || '4.5'}</span>
+            <span>${course.duration || '4 Weeks'}</span>
+          </div>
+          <div class="mt-3">${levelBadge(course.level)}</div>
+          <a href="${enrollUrl}" class="block w-full mt-6 bg-lime-500 hover:bg-lime-600 text-black text-center py-3 rounded-lg font-semibold transition text-sm">
+            ${user ? 'View Course' : 'Enroll Now'}
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderCourses(courses) {
+    const grid = document.getElementById('coursesGrid');
+    const empty = document.getElementById('emptyState');
+
+    if (courses.length === 0) {
+      grid.classList.add('hidden');
+      empty.classList.remove('hidden');
+    } else {
+      empty.classList.add('hidden');
+      grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8';
+      grid.innerHTML = courses.map((c, i) => renderCourse(c, i)).join('');
+    }
+  }
+
+  async function loadCourses() {
+    try {
+      const data = await api.getCourses();
+      allCourses = data.courses || [];
+      document.getElementById('loadingState').classList.add('hidden');
+      renderCourses(allCourses);
+    } catch (e) {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('emptyState').classList.remove('hidden');
+    }
+  }
+
+  function filterCourses() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const category = document.getElementById('categoryFilter').value;
+    const level = document.getElementById('levelFilter').value;
+
+    const filtered = allCourses.filter(c => {
+      const matchSearch = c.title.toLowerCase().includes(search) || c.description?.toLowerCase().includes(search);
+      const matchCategory = !category || c.category === category;
+      const matchLevel = !level || c.level === level;
+      return matchSearch && matchCategory && matchLevel;
+    });
+    renderCourses(filtered);
+  }
+
+  document.getElementById('searchInput').addEventListener('input', filterCourses);
+  document.getElementById('categoryFilter').addEventListener('change', filterCourses);
+  document.getElementById('levelFilter').addEventListener('change', filterCourses);
+
+  // Dashboard link
+  const user = getUser();
+  if (user) {
+    const dl = document.getElementById('dashboardLink');
+    if (dl) {
+      if (user.role === 'admin') dl.href = '/pages/admin-dashboard.html';
+      else if (user.role === 'teacher') dl.href = '/pages/teacher-dashboard.html';
+      else dl.href = '/pages/student-dashboard.html';
+    }
+  }
+
+  loadCourses();
+</script>
+</body>
+</html>

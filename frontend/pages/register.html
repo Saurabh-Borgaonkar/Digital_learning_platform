@@ -1,11 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — NexLearn</title>
+  <meta name="description" content="Create your free NexLearn account and start learning today.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>body { font-family: 'Poppins', sans-serif; }</style>
 </head>
-<body>
-    hiiiii
+<body class="bg-[#FDF8F3] min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<header class="bg-[#FDF8F3] shadow-sm">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between h-20">
+      <a href="/pages/index.html">
+        <img src="../assets/logo.png" alt="NexLearn" class="h-12 w-auto object-contain">
+      </a>
+      <a href="/pages/login.html" class="text-gray-600 hover:text-lime-600 font-medium transition">
+        Already have an account? <span class="text-lime-600 font-semibold">Login</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Register Form -->
+<main class="flex-1 flex items-center justify-center px-4 py-12">
+  <div class="w-full max-w-md">
+    <div class="bg-white rounded-3xl shadow-xl p-8 md:p-10">
+
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-lime-500 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4">🚀</div>
+        <h1 class="text-2xl font-bold text-gray-900">Create Your Account</h1>
+        <p class="text-gray-500 text-sm mt-2">Join thousands of learners on NexLearn</p>
+      </div>
+
+      <!-- Error / Success Message -->
+      <div id="alertMsg" class="hidden px-4 py-3 rounded-xl text-sm mb-6"></div>
+
+      <!-- Form -->
+      <form id="registerForm" class="space-y-5">
+        <!-- Full Name -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2" for="name">Full Name</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </span>
+            <input type="text" id="name" required placeholder="Rahul Sharma"
+              class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-400 text-gray-700 text-sm">
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2" for="email">Email Address</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+              <i data-lucide="mail" class="w-5 h-5"></i>
+            </span>
+            <input type="email" id="email" required placeholder="you@example.com"
+              class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-400 text-gray-700 text-sm">
+          </div>
+        </div>
+
+        <!-- Role -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2" for="role">I am a</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+              <i data-lucide="briefcase" class="w-5 h-5"></i>
+            </span>
+            <select id="role" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-400 text-gray-700 text-sm appearance-none bg-white">
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2" for="password">Password</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+              <i data-lucide="lock" class="w-5 h-5"></i>
+            </span>
+            <input type="password" id="password" required placeholder="Min. 6 characters"
+              class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-400 text-gray-700 text-sm">
+            <button type="button" id="togglePass" class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
+              <i data-lucide="eye" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2" for="confirmPassword">Confirm Password</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+              <i data-lucide="lock" class="w-5 h-5"></i>
+            </span>
+            <input type="password" id="confirmPassword" required placeholder="Re-enter password"
+              class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime-400 text-gray-700 text-sm">
+          </div>
+        </div>
+
+        <button type="submit" id="registerBtn"
+          class="w-full bg-lime-500 hover:bg-lime-600 text-black font-semibold py-3 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+          <span id="btnText">Create Account</span>
+          <span id="btnSpinner" class="hidden">
+            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
+          </span>
+        </button>
+      </form>
+
+      <p class="text-center text-gray-600 text-sm mt-6">
+        Already have an account?
+        <a href="/pages/login.html" class="text-lime-600 font-semibold hover:underline">Login here</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<script src="../js/api.js"></script>
+<script>
+  lucide.createIcons();
+
+  document.getElementById('togglePass').addEventListener('click', () => {
+    const p = document.getElementById('password');
+    p.type = p.type === 'password' ? 'text' : 'password';
+  });
+
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const role = document.getElementById('role').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const alertMsg = document.getElementById('alertMsg');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+
+    alertMsg.className = 'hidden px-4 py-3 rounded-xl text-sm mb-6';
+
+    if (password !== confirmPassword) {
+      alertMsg.textContent = 'Passwords do not match!';
+      alertMsg.className = 'px-4 py-3 rounded-xl text-sm mb-6 bg-red-50 border border-red-200 text-red-600';
+      return;
+    }
+
+    if (password.length < 6) {
+      alertMsg.textContent = 'Password must be at least 6 characters.';
+      alertMsg.className = 'px-4 py-3 rounded-xl text-sm mb-6 bg-red-50 border border-red-200 text-red-600';
+      return;
+    }
+
+    btnText.textContent = 'Creating account...';
+    btnSpinner.classList.remove('hidden');
+
+    try {
+      const data = await api.register({ name, email, password, role });
+      saveAuth(data);
+
+      alertMsg.textContent = '🎉 Account created! Redirecting...';
+      alertMsg.className = 'px-4 py-3 rounded-xl text-sm mb-6 bg-lime-50 border border-lime-200 text-lime-700';
+
+      setTimeout(() => {
+        if (data.user.role === 'teacher') window.location.href = '/pages/teacher-dashboard.html';
+        else window.location.href = '/pages/student-dashboard.html';
+      }, 1500);
+    } catch (error) {
+      alertMsg.textContent = error.message || 'Registration failed. Please try again.';
+      alertMsg.className = 'px-4 py-3 rounded-xl text-sm mb-6 bg-red-50 border border-red-200 text-red-600';
+      btnText.textContent = 'Create Account';
+      btnSpinner.classList.add('hidden');
+    }
+  });
+</script>
 </body>
 </html>
