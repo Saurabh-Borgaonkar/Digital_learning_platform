@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — NexLearn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>body { font-family: 'Poppins', sans-serif; }</style>
+</head>
+<body class="bg-[#F1F5F9] min-h-screen flex">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="w-64 min-h-screen bg-gray-900 fixed top-0 left-0 z-40 flex flex-col">
+  <div class="flex items-center gap-3 px-6 py-5 border-b border-gray-700">
+    <div class="w-9 h-9 bg-purple-500 rounded-xl flex items-center justify-center text-xl">⚙️</div>
+    <span class="text-white font-bold text-lg">NexLearn</span>
+  </div>
+  <div class="px-6 py-4 border-b border-gray-700">
+    <div class="flex items-center gap-3">
+      <div id="sidebarAvatar" class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg">A</div>
+      <div>
+        <p id="sidebarName" class="text-white font-semibold text-sm">Admin</p>
+        <span class="text-xs bg-purple-500/30 text-purple-300 px-2 py-0.5 rounded-full">Administrator</span>
+      </div>
+    </div>
+  </div>
+  <nav class="flex-1 px-4 py-5 space-y-1">
+    <a href="#" onclick="showSection('overview');return false;" id="nav-overview" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-500 text-white transition text-sm font-medium">
+      <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+    </a>
+    <a href="#" onclick="showSection('users');return false;" id="nav-users" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="users" class="w-4 h-4"></i> All Users
+    </a>
+    <a href="#" onclick="showSection('students');return false;" id="nav-students" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="graduation-cap" class="w-4 h-4"></i> Students
+    </a>
+    <a href="#" onclick="showSection('teachers');return false;" id="nav-teachers" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="briefcase" class="w-4 h-4"></i> Teachers
+    </a>
+    <a href="#" onclick="showSection('courses');return false;" id="nav-courses" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="book-open" class="w-4 h-4"></i> Courses
+    </a>
+  </nav>
+  <div class="px-4 pb-6">
+    <a href="/pages/index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 transition text-sm font-medium">
+      <i data-lucide="home" class="w-4 h-4"></i> Home Page
+    </a>
+    <button onclick="logout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-white/10 transition text-sm font-medium w-full">
+      <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+    </button>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="ml-64 flex-1 min-h-screen">
+  <header class="bg-white shadow-sm sticky top-0 z-30 px-8 py-4 flex items-center justify-between">
+    <div>
+      <h1 id="pageTitle" class="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+      <p id="pageSubtitle" class="text-gray-500 text-sm">Platform overview and management.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="refreshAll()" class="flex items-center gap-2 border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
+      </button>
+    </div>
+  </header>
+
+  <div class="p-8">
+
+    <!-- OVERVIEW -->
+    <section id="section-overview">
+      <!-- Stat Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border-l-4 border-purple-500">
+          <p class="text-gray-500 text-sm mb-1">Total Users</p>
+          <p id="statTotalUsers" class="text-3xl font-bold text-gray-900">—</p>
+          <p class="text-purple-500 text-xs mt-1 font-medium">Platform wide</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border-l-4 border-lime-500">
+          <p class="text-gray-500 text-sm mb-1">Students</p>
+          <p id="statStudents" class="text-3xl font-bold text-gray-900">—</p>
+          <p class="text-lime-600 text-xs mt-1 font-medium">Registered learners</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border-l-4 border-blue-500">
+          <p class="text-gray-500 text-sm mb-1">Teachers</p>
+          <p id="statTeachers" class="text-3xl font-bold text-gray-900">—</p>
+          <p class="text-blue-500 text-xs mt-1 font-medium">Course creators</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border-l-4 border-orange-500">
+          <p class="text-gray-500 text-sm mb-1">Courses</p>
+          <p id="statCourses" class="text-3xl font-bold text-gray-900">—</p>
+          <p class="text-orange-500 text-xs mt-1 font-medium">Total enrollments: <span id="statEnrollments">—</span></p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Users -->
+        <div class="bg-white rounded-2xl shadow-sm p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-base font-bold text-gray-900">Recent Registrations</h2>
+            <button onclick="showSection('users')" class="text-purple-600 text-sm font-medium hover:underline">View All</button>
+          </div>
+          <div id="recentUsers" class="space-y-3">
+            <p class="text-gray-400 text-sm text-center py-4">Loading...</p>
+          </div>
+        </div>
+
+        <!-- Recent Courses -->
+        <div class="bg-white rounded-2xl shadow-sm p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-base font-bold text-gray-900">Recent Courses</h2>
+            <button onclick="showSection('courses')" class="text-purple-600 text-sm font-medium hover:underline">View All</button>
+          </div>
+          <div id="recentCourses" class="space-y-3">
+            <p class="text-gray-400 text-sm text-center py-4">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALL USERS -->
+    <section id="section-users" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">All Users</h2>
+        <div class="flex gap-3">
+          <select id="roleFilter" onchange="filterUsers()" class="border border-gray-200 rounded-xl px-4 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <option value="">All Roles</option>
+            <option value="student">Students</option>
+            <option value="teacher">Teachers</option>
+            <option value="admin">Admins</option>
+          </select>
+          <input type="text" id="userSearch" oninput="filterUsers()" placeholder="Search name/email..." class="border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400">
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">User</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Email</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Role</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Joined</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="5" class="text-center py-12 text-gray-400">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- STUDENTS -->
+    <section id="section-students" class="hidden">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">Students</h2>
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Student</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Email</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Joined</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody">
+            <tr><td colspan="4" class="text-center py-12 text-gray-400">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TEACHERS -->
+    <section id="section-teachers" class="hidden">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">Teachers</h2>
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Teacher</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Email</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Joined</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="teachersTableBody">
+            <tr><td colspan="4" class="text-center py-12 text-gray-400">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- COURSES -->
+    <section id="section-courses" class="hidden">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">All Courses</h2>
+      <div id="adminCoursesContainer" class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Course</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Instructor</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Category</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Students</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Status</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="coursesTableBody">
+            <tr><td colspan="6" class="text-center py-12 text-gray-400">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ROLE CHANGE MODAL -->
+<div id="roleModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-8">
+    <h3 class="text-lg font-bold text-gray-900 mb-1">Change User Role</h3>
+    <p id="roleModalUser" class="text-gray-500 text-sm mb-5"></p>
+    <select id="roleSelect" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white mb-5 focus:outline-none focus:ring-2 focus:ring-purple-400">
+      <option value="student">Student</option>
+      <option value="teacher">Teacher</option>
+      <option value="admin">Admin</option>
+    </select>
+    <div class="flex gap-3">
+      <button onclick="closeModal('roleModal')" class="flex-1 border border-gray-200 text-gray-600 py-3 rounded-xl text-sm font-semibold">Cancel</button>
+      <button onclick="saveRole()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-xl text-sm font-semibold">Save Role</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+lucide.createIcons();
+
+let currentUser = null;
+let allUsers = [];
+let allCourses = [];
+let roleUserId = null;
+
+(async () => {
+  currentUser = requireAuth(['admin']);
+  if (!currentUser) return;
+  document.getElementById('sidebarName').textContent = currentUser.name;
+  document.getElementById('sidebarAvatar').textContent = currentUser.name[0].toUpperCase();
+  await refreshAll();
+})();
+
+async function refreshAll() {
+  try {
+    const [analytics, usersData, coursesData] = await Promise.all([
+      api.getAnalytics(),
+      api.getAllUsers(),
+      api.getCourses()
+    ]);
+
+    const { totalUsers, totalStudents, totalTeachers, totalCourses, totalEnrollments, recentUsers, recentCourses } = analytics.analytics;
+    document.getElementById('statTotalUsers').textContent = totalUsers;
+    document.getElementById('statStudents').textContent = totalStudents;
+    document.getElementById('statTeachers').textContent = totalTeachers;
+    document.getElementById('statCourses').textContent = totalCourses;
+    document.getElementById('statEnrollments').textContent = totalEnrollments;
+
+    allUsers = usersData.users || [];
+    allCourses = coursesData.courses || [];
+
+    renderRecentUsers(recentUsers || []);
+    renderRecentCourses(recentCourses || []);
+
+    if (!document.getElementById('section-overview').classList.contains('hidden')) return;
+  } catch(e) { showToast('Failed to load analytics: ' + e.message, 'error'); }
+}
+
+function renderRecentUsers(users) {
+  const el = document.getElementById('recentUsers');
+  if (!users.length) { el.innerHTML = `<p class="text-gray-400 text-sm text-center py-4">No users yet.</p>`; return; }
+  el.innerHTML = users.map(u => `
+    <div class="flex items-center justify-between py-2">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm ${u.role === 'admin' ? 'bg-purple-500' : u.role === 'teacher' ? 'bg-blue-500' : 'bg-lime-500'}">
+          ${u.name[0].toUpperCase()}
+        </div>
+        <div>
+          <p class="font-medium text-gray-900 text-sm">${u.name}</p>
+          <p class="text-gray-400 text-xs">${u.email}</p>
+        </div>
+      </div>
+      <span class="text-xs px-2 py-1 rounded-full font-medium ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : u.role === 'teacher' ? 'bg-blue-100 text-blue-700' : 'bg-lime-100 text-lime-700'}">
+        ${u.role}
+      </span>
+    </div>`).join('');
+}
+
+function renderRecentCourses(courses) {
+  const el = document.getElementById('recentCourses');
+  if (!courses.length) { el.innerHTML = `<p class="text-gray-400 text-sm text-center py-4">No courses yet.</p>`; return; }
+  el.innerHTML = courses.map(c => `
+    <div class="flex items-center justify-between py-2">
+      <div>
+        <p class="font-medium text-gray-900 text-sm">${c.title}</p>
+        <p class="text-gray-400 text-xs">${c.category} • by ${c.instructor?.name || 'Unknown'}</p>
+      </div>
+      <span class="text-xs px-2 py-1 rounded-full font-medium ${c.isPublished ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}">
+        ${c.isPublished ? 'Published' : 'Draft'}
+      </span>
+    </div>`).join('');
+}
+
+function showSection(name) {
+  document.querySelectorAll('[id^="section-"]').forEach(s => s.classList.add('hidden'));
+  document.querySelectorAll('[id^="nav-"]').forEach(l => {
+    l.className = 'flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium';
+  });
+  document.getElementById(`section-${name}`)?.classList.remove('hidden');
+  const nav = document.getElementById(`nav-${name}`);
+  if (nav) nav.className = 'flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-500 text-white transition text-sm font-medium';
+
+  const titles = {
+    'overview': ['Admin Dashboard', 'Platform overview and management.'],
+    'users': ['All Users', 'Manage all platform users.'],
+    'students': ['Students', 'All registered students.'],
+    'teachers': ['Teachers', 'All registered teachers.'],
+    'courses': ['Courses', 'All platform courses.']
+  };
+  const [t, s] = titles[name] || ['Dashboard', ''];
+  document.getElementById('pageTitle').textContent = t;
+  document.getElementById('pageSubtitle').textContent = s;
+
+  if (name === 'users') renderUsersTable(allUsers);
+  if (name === 'students') renderRoleTable(allUsers.filter(u => u.role === 'student'), 'studentsTableBody', 4);
+  if (name === 'teachers') renderRoleTable(allUsers.filter(u => u.role === 'teacher'), 'teachersTableBody', 4);
+  if (name === 'courses') renderCoursesTable();
+}
+
+function renderUsersTable(users) {
+  const tbody = document.getElementById('usersTableBody');
+  if (!users.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-gray-400">No users found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = users.map(u => `
+    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm ${u.role === 'admin' ? 'bg-purple-500' : u.role === 'teacher' ? 'bg-blue-500' : 'bg-lime-500'}">
+            ${u.name[0].toUpperCase()}
+          </div>
+          <span class="font-medium text-gray-900 text-sm">${u.name}</span>
+        </div>
+      </td>
+      <td class="px-6 py-4 text-gray-500 text-sm">${u.email}</td>
+      <td class="px-6 py-4">
+        <span class="text-xs px-3 py-1 rounded-full font-medium ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : u.role === 'teacher' ? 'bg-blue-100 text-blue-700' : 'bg-lime-100 text-lime-700'}">
+          ${u.role}
+        </span>
+      </td>
+      <td class="px-6 py-4 text-gray-500 text-sm">${new Date(u.createdAt).toLocaleDateString()}</td>
+      <td class="px-6 py-4">
+        <div class="flex gap-2">
+          <button onclick="openRoleModal('${u._id}','${u.name}','${u.role}')" class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition">Change Role</button>
+          ${u._id !== currentUser._id ? `<button onclick="deleteUser('${u._id}')" class="text-xs px-3 py-1.5 border border-red-200 rounded-lg text-red-500 hover:bg-red-50 transition">Delete</button>` : ''}
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function renderRoleTable(users, tbodyId, cols) {
+  const tbody = document.getElementById(tbodyId);
+  if (!users.length) {
+    tbody.innerHTML = `<tr><td colspan="${cols}" class="text-center py-12 text-gray-400">No ${cols === 4 ? 'users' : 'users'} found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = users.map(u => `
+    <tr class="border-b border-gray-50 hover:bg-gray-50">
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${u.role === 'teacher' ? 'bg-blue-500 text-white' : 'bg-lime-500 text-black'}">
+            ${u.name[0].toUpperCase()}
+          </div>
+          <span class="font-medium text-gray-900 text-sm">${u.name}</span>
+        </div>
+      </td>
+      <td class="px-6 py-4 text-gray-500 text-sm">${u.email}</td>
+      <td class="px-6 py-4 text-gray-500 text-sm">${new Date(u.createdAt).toLocaleDateString()}</td>
+      <td class="px-6 py-4">
+        <button onclick="openRoleModal('${u._id}','${u.name}','${u.role}')" class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition">Change Role</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderCoursesTable() {
+  const tbody = document.getElementById('coursesTableBody');
+  if (!allCourses.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-gray-400">No courses found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = allCourses.map(c => `
+    <tr class="border-b border-gray-50 hover:bg-gray-50">
+      <td class="px-6 py-4">
+        <p class="font-semibold text-gray-900 text-sm">${c.title}</p>
+        <p class="text-gray-400 text-xs">${c.level} • ${c.duration || ''}</p>
+      </td>
+      <td class="px-6 py-4 text-gray-600 text-sm">${c.instructor?.name || 'Unknown'}</td>
+      <td class="px-6 py-4 text-gray-600 text-sm">${c.category}</td>
+      <td class="px-6 py-4 text-gray-600 text-sm">${c.totalStudents || 0}</td>
+      <td class="px-6 py-4">
+        <span class="text-xs px-3 py-1 rounded-full font-medium ${c.isPublished ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}">
+          ${c.isPublished ? 'Published' : 'Draft'}
+        </span>
+      </td>
+      <td class="px-6 py-4">
+        <button onclick="adminDeleteCourse('${c._id}')" class="text-xs px-3 py-1.5 border border-red-200 rounded-lg text-red-500 hover:bg-red-50 transition">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterUsers() {
+  const role = document.getElementById('roleFilter').value;
+  const search = document.getElementById('userSearch').value.toLowerCase();
+  const filtered = allUsers.filter(u =>
+    (!role || u.role === role) &&
+    (!search || u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search))
+  );
+  renderUsersTable(filtered);
+}
+
+function openRoleModal(userId, name, currentRole) {
+  roleUserId = userId;
+  document.getElementById('roleModalUser').textContent = `Changing role for: ${name}`;
+  document.getElementById('roleSelect').value = currentRole;
+  document.getElementById('roleModal').classList.remove('hidden');
+}
+
+async function saveRole() {
+  const role = document.getElementById('roleSelect').value;
+  try {
+    await api.updateUserRole(roleUserId, role);
+    const user = allUsers.find(u => u._id === roleUserId);
+    if (user) user.role = role;
+    closeModal('roleModal');
+    showToast('Role updated successfully!');
+    renderUsersTable(allUsers);
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function deleteUser(userId) {
+  if (!confirm('Are you sure you want to delete this user? This cannot be undone.')) return;
+  try {
+    await api.deleteUser(userId);
+    allUsers = allUsers.filter(u => u._id !== userId);
+    renderUsersTable(allUsers);
+    showToast('User deleted.');
+    await refreshAll();
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function adminDeleteCourse(id) {
+  if (!confirm('Delete this course and all its data?')) return;
+  try {
+    await api.deleteCourse(id);
+    allCourses = allCourses.filter(c => c._id !== id);
+    renderCoursesTable();
+    showToast('Course deleted.');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function logout() { clearAuth(); window.location.href = '/pages/login.html'; }
+</script>
+</body>
+</html>

@@ -12,26 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update navbar based on auth state
   updateNavbar();
 
-  // FAQ accordion
-  document.querySelectorAll('.faq-question').forEach(question => {
-    question.addEventListener('click', () => {
-      const item = question.closest('.faq-item');
-      const answer = item.querySelector('.faq-answer');
-      const icon = question.querySelector('.faq-icon');
-
-      const isOpen = !answer.classList.contains('hidden');
-
-      // Close all
-      document.querySelectorAll('.faq-answer').forEach(a => a.classList.add('hidden'));
-      document.querySelectorAll('.faq-icon').forEach(i => i.textContent = '+');
-
-      // Open clicked if it was closed
-      if (!isOpen) {
-        answer.classList.remove('hidden');
-        if (icon) icon.textContent = '−';
-      }
-    });
-  });
 });
 
 function updateNavbar() {

@@ -16,10 +16,10 @@
 <header class="bg-[#FDF8F3] shadow-sm">
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex items-center justify-between h-20">
-      <a href="/pages/index.html">
+      <a href="../pages/index.html">
         <img src="../assets/logo.png" alt="NexLearn" class="h-12 w-auto object-contain">
       </a>
-      <a href="/pages/register.html" class="text-gray-600 hover:text-lime-600 font-medium transition">
+      <a href="../pages/register.html" class="text-gray-600 hover:text-lime-600 font-medium transition">
         Don't have an account? <span class="text-lime-600 font-semibold">Register</span>
       </a>
     </div>
@@ -111,8 +111,6 @@
     </div>
   </div>
 </main>
-
-<script src="../js/api.js"></script>
 <script>
   lucide.createIcons();
 
@@ -137,8 +135,22 @@
     btnSpinner.classList.remove('hidden');
 
     try {
-      const data = await api.login({ email, password });
-      saveAuth(data);
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ email, password })
+});
+
+const data = await response.json();
+
+if (!response.ok) {
+  throw new Error(data.message || 'Login failed');
+}
+
+localStorage.setItem('nexlearn_token', data.token);
+localStorage.setItem('nexlearn_user', JSON.stringify(data.user));
 
       // Redirect based on role
       const role = data.user.role;
@@ -154,12 +166,17 @@
   });
 
   // Redirect if already logged in
-  if (getUser() && getToken()) {
-    const user = getUser();
-    if (user.role === 'admin') window.location.href = '/pages/admin-dashboard.html';
-    else if (user.role === 'teacher') window.location.href = '/pages/teacher-dashboard.html';
-    else window.location.href = '/pages/student-dashboard.html';
-  }
+  const user = JSON.parse(localStorage.getItem('nexlearn_user'));
+const token = localStorage.getItem('nexlearn_token');
+
+if (user && token) {
+  if (user.role === 'admin')
+    window.location.href = '/pages/admin-dashboard.html';
+  else if (user.role === 'teacher')
+    window.location.href = '/pages/teacher-dashboard.html';
+  else
+    window.location.href = '/pages/student-dashboard.html';
+}
 </script>
 </body>
 </html>

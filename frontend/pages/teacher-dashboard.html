@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard — NexLearn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>body { font-family: 'Poppins', sans-serif; }</style>
+</head>
+<body class="bg-[#FDF8F3] min-h-screen flex">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="w-64 min-h-screen bg-gray-900 fixed top-0 left-0 z-40 flex flex-col">
+  <div class="flex items-center gap-3 px-6 py-5 border-b border-gray-700">
+    <div class="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center text-xl">👨‍🏫</div>
+    <span class="text-white font-bold text-lg">NexLearn</span>
+  </div>
+  <div class="px-6 py-4 border-b border-gray-700">
+    <div class="flex items-center gap-3">
+      <div id="sidebarAvatar" class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">T</div>
+      <div>
+        <p id="sidebarName" class="text-white font-semibold text-sm">Teacher</p>
+        <p class="text-gray-400 text-xs">Teacher</p>
+      </div>
+    </div>
+  </div>
+  <nav class="flex-1 px-4 py-5 space-y-1">
+    <a href="#" onclick="showSection('overview'); return false;" id="nav-overview" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium bg-blue-500 text-black">
+      <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+    </a>
+    <a href="#" onclick="showSection('courses'); return false;" id="nav-courses" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="book-open" class="w-4 h-4"></i> My Courses
+    </a>
+    <a href="#" onclick="showSection('create-course'); return false;" id="nav-create-course" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="plus-circle" class="w-4 h-4"></i> Create Course
+    </a>
+    <a href="#" onclick="showSection('assignments'); return false;" id="nav-assignments" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="file-text" class="w-4 h-4"></i> Assignments
+    </a>
+    <a href="#" onclick="showSection('students'); return false;" id="nav-students" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="users" class="w-4 h-4"></i> Students
+    </a>
+    <a href="#" onclick="showSection('quizzes'); return false;" id="nav-quizzes" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium">
+      <i data-lucide="brain" class="w-4 h-4"></i> Quizzes
+    </a>
+  </nav>
+  <div class="px-4 pb-6">
+    <button onclick="logout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-white/10 transition text-sm font-medium w-full">
+      <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+    </button>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="ml-64 flex-1 min-h-screen">
+  <header class="bg-white shadow-sm sticky top-0 z-30 px-8 py-4 flex items-center justify-between">
+    <div>
+      <h1 id="pageTitle" class="text-xl font-bold text-gray-900">Teacher Dashboard</h1>
+      <p id="pageSubtitle" class="text-gray-500 text-sm">Manage your courses and students.</p>
+    </div>
+    <button onclick="showSection('create-course')" class="bg-lime-500 hover:bg-lime-600 text-black px-5 py-2 rounded-xl font-semibold text-sm transition">
+      + Create Course
+    </button>
+  </header>
+
+  <div class="p-8">
+
+    <!-- OVERVIEW -->
+    <section id="section-overview">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-2">📚</div>
+          <p id="statCourses" class="text-3xl font-bold text-gray-900">0</p>
+          <p class="text-gray-500 text-sm mt-1">Total Courses</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-2">✅</div>
+          <p id="statPublished" class="text-3xl font-bold text-gray-900">0</p>
+          <p class="text-gray-500 text-sm mt-1">Published</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-2">👥</div>
+          <p id="statStudents" class="text-3xl font-bold text-gray-900">0</p>
+          <p class="text-gray-500 text-sm mt-1">Total Students</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-2">📝</div>
+          <p id="statPending" class="text-3xl font-bold text-gray-900">0</p>
+          <p class="text-gray-500 text-sm mt-1">Pending Grades</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-lg font-bold text-gray-900">My Courses</h2>
+          <button onclick="showSection('courses')" class="text-lime-600 text-sm font-medium hover:underline">View All</button>
+        </div>
+        <div id="overviewCourses" class="space-y-3">
+          <p class="text-gray-400 text-sm text-center py-6">Loading courses...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MY COURSES -->
+    <section id="section-courses" class="hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-900">My Courses</h2>
+        <button onclick="showSection('create-course')" class="bg-lime-500 hover:bg-lime-600 text-black px-5 py-2 rounded-xl font-semibold text-sm">+ Create Course</button>
+      </div>
+      <div id="coursesTableContainer" class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Course</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Category</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Level</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Students</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Status</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="coursesTableBody">
+            <tr><td colspan="6" class="text-center py-12 text-gray-400">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CREATE COURSE -->
+    <section id="section-create-course" class="hidden">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">Create New Course</h2>
+      <div class="bg-white rounded-2xl shadow-sm p-8 max-w-2xl">
+        <form id="createCourseForm" class="space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Course Title *</label>
+            <input type="text" id="cTitle" required placeholder="e.g. Full Stack Web Development"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Description *</label>
+            <textarea id="cDescription" required rows="4" placeholder="Describe what students will learn..."
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400 resize-none"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Category *</label>
+              <select id="cCategory" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400 bg-white">
+                <option value="Web Development">Web Development</option>
+                <option value="Programming">Programming</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                <option value="Design">Design</option>
+                <option value="Business">Business</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Level *</label>
+              <select id="cLevel" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400 bg-white">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Duration</label>
+              <input type="text" id="cDuration" placeholder="e.g. 8 Weeks"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Thumbnail URL</label>
+              <input type="url" id="cThumbnail" placeholder="https://..."
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+            </div>
+          </div>
+          <div id="courseFormError" class="hidden bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm"></div>
+          <div class="flex gap-3 pt-2">
+            <button type="submit" id="createCourseBtn" class="bg-lime-500 hover:bg-lime-600 text-black px-8 py-3 rounded-xl font-semibold text-sm transition">
+              Create Course
+            </button>
+            <button type="button" onclick="showSection('courses')" class="border border-gray-200 text-gray-600 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 transition">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Add Lesson (shown after course creation) -->
+      <div id="addLessonPanel" class="hidden mt-8 bg-white rounded-2xl shadow-sm p-8 max-w-2xl">
+        <h3 class="text-lg font-bold text-gray-900 mb-5">Add Lessons to <span id="newCourseTitle" class="text-lime-600"></span></h3>
+        <div class="space-y-4" id="lessonsList"></div>
+        <form id="addLessonForm" class="space-y-4 mt-5 border-t border-gray-100 pt-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Lesson Title *</label>
+              <input type="text" id="lTitle" placeholder="Lesson title"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Duration</label>
+              <input type="text" id="lDuration" placeholder="e.g. 15 mins"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Video URL</label>
+            <input type="url" id="lVideo" placeholder="YouTube or video link"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Content / Notes</label>
+            <textarea id="lContent" rows="3" placeholder="Lesson notes..."
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400 resize-none"></textarea>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="addLesson()" class="bg-lime-500 hover:bg-lime-600 text-black px-6 py-3 rounded-xl font-semibold text-sm transition">
+              + Add Lesson
+            </button>
+            <button type="button" onclick="publishCourse()" class="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold text-sm transition">
+              ✓ Publish Course
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ASSIGNMENTS -->
+    <section id="section-assignments" class="hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-900">Assignments & Grading</h2>
+      </div>
+      <!-- Course selector for assignments -->
+      <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+        <h3 class="text-base font-semibold text-gray-700 mb-4">Select Course</h3>
+        <div id="assignCourseList" class="flex flex-wrap gap-3">
+          <p class="text-gray-400 text-sm">Loading courses...</p>
+        </div>
+      </div>
+      <!-- Create Assignment -->
+      <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+        <h3 class="text-base font-bold text-gray-900 mb-4">Create Assignment</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input id="aTitle" type="text" placeholder="Assignment Title" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+          <input id="aDueDate" type="date" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+          <input id="aMaxMarks" type="number" placeholder="Max Marks (default 100)" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+          <select id="aCourseSel" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400 bg-white">
+            <option value="">Select Course</option>
+          </select>
+          <textarea id="aDesc" rows="2" placeholder="Assignment description..." class="md:col-span-2 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400 resize-none"></textarea>
+        </div>
+        <button onclick="createAssignment()" class="mt-4 bg-lime-500 hover:bg-lime-600 text-black px-6 py-2.5 rounded-xl font-semibold text-sm transition">
+          Create Assignment
+        </button>
+      </div>
+      <!-- Submissions to Grade -->
+      <div class="bg-white rounded-2xl shadow-sm p-6">
+        <h3 class="text-base font-bold text-gray-900 mb-4">Grade Submissions</h3>
+        <div id="submissionsForGrading" class="space-y-4">
+          <p class="text-gray-400 text-sm text-center py-6">Select a course's assignment to see submissions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENTS -->
+    <section id="section-students" class="hidden">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">My Students</h2>
+      <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+        <div id="studentCourseSelector" class="flex flex-wrap gap-3">
+          <p class="text-gray-400 text-sm">Loading courses...</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Student</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Email</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Progress</th>
+              <th class="text-left px-6 py-4 text-gray-500 font-semibold">Enrolled</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody">
+            <tr><td colspan="4" class="text-center py-12 text-gray-400">Select a course to view students.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- QUIZZES -->
+    <section id="section-quizzes" class="hidden">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">Manage Quizzes</h2>
+      <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+        <h3 class="text-base font-bold text-gray-900 mb-4">Create Quiz</h3>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <input id="qTitle" type="text" placeholder="Quiz Title" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+            <select id="qCourseSel" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400 bg-white">
+              <option value="">Select Course</option>
+            </select>
+            <input id="qTimeLimit" type="number" placeholder="Time Limit (minutes)" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+            <input id="qPassingScore" type="number" placeholder="Passing Score %" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+          </div>
+          <!-- Questions Builder -->
+          <div id="questionsBuilder" class="space-y-4"></div>
+          <button onclick="addQuestion()" class="border border-dashed border-lime-400 text-lime-600 w-full py-3 rounded-xl text-sm font-semibold hover:bg-lime-50 transition">
+            + Add Question
+          </button>
+          <button onclick="createQuiz()" class="bg-lime-500 hover:bg-lime-600 text-black px-6 py-3 rounded-xl font-semibold text-sm transition">
+            Create Quiz
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- GRADE MODAL -->
+<div id="gradeModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+    <h3 class="text-lg font-bold text-gray-900 mb-2">Grade Submission</h3>
+    <p id="gradeStudentName" class="text-gray-500 text-sm mb-1"></p>
+    <p id="gradeContent" class="text-gray-600 text-sm italic bg-gray-50 rounded-xl p-3 mb-4 max-h-32 overflow-y-auto"></p>
+    <div class="space-y-3">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Grade (out of <span id="gradeMax"></span>)</label>
+        <input id="gradeInput" type="number" placeholder="Enter grade" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Feedback</label>
+        <textarea id="feedbackInput" rows="3" placeholder="Feedback for student..." class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400 resize-none"></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="closeModal('gradeModal')" class="flex-1 border border-gray-200 text-gray-600 py-3 rounded-xl font-semibold text-sm">Cancel</button>
+      <button id="saveGradeBtn" onclick="saveGrade()" class="flex-1 bg-lime-500 hover:bg-lime-600 text-black py-3 rounded-xl font-semibold text-sm">Save Grade</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+lucide.createIcons();
+
+let currentUser = null;
+let myCourses = [];
+let newCourseId = null;
+let currentSubmissionId = null;
+let questionCount = 0;
+
+(async () => {
+  currentUser = requireAuth(['teacher']);
+  if (!currentUser) return;
+  document.getElementById('sidebarName').textContent = currentUser.name;
+  document.getElementById('sidebarAvatar').textContent = currentUser.name[0].toUpperCase();
+  await loadMyCourses();
+  renderOverview();
+})();
+
+async function loadMyCourses() {
+  try { const d = await api.getMyCourses(); myCourses = d.courses || []; } catch(e) { myCourses = []; }
+}
+
+function showSection(name) {
+  document.querySelectorAll('[id^="section-"]').forEach(s => s.classList.add('hidden'));
+  document.querySelectorAll('[id^="nav-"]').forEach(l => {
+    l.className = 'flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 hover:text-white transition text-sm font-medium';
+  });
+  document.getElementById(`section-${name}`)?.classList.remove('hidden');
+  const nav = document.getElementById(`nav-${name}`);
+  if (nav) nav.className = 'flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-500 text-black transition text-sm font-medium';
+
+  const titles = {
+    'overview': ['Teacher Dashboard','Manage your courses and students.'],
+    'courses': ['My Courses','All courses you have created.'],
+    'create-course': ['Create Course','Build a new course for your students.'],
+    'assignments': ['Assignments','Create and grade assignments.'],
+    'students': ['My Students','Students enrolled in your courses.'],
+    'quizzes': ['Quizzes','Create quizzes for your courses.']
+  };
+  const [t, s] = titles[name] || ['Dashboard',''];
+  document.getElementById('pageTitle').textContent = t;
+  document.getElementById('pageSubtitle').textContent = s;
+
+  if (name === 'courses') renderCoursesTable();
+  if (name === 'assignments') populateCourseSelectors();
+  if (name === 'students') renderStudentSelector();
+  if (name === 'quizzes') populateQuizCourseSelector();
+}
+
+function renderOverview() {
+  const published = myCourses.filter(c => c.isPublished).length;
+  const totalStudents = myCourses.reduce((sum, c) => sum + (c.totalStudents || 0), 0);
+  document.getElementById('statCourses').textContent = myCourses.length;
+  document.getElementById('statPublished').textContent = published;
+  document.getElementById('statStudents').textContent = totalStudents;
+
+  const overviewCourses = document.getElementById('overviewCourses');
+  if (myCourses.length === 0) {
+    overviewCourses.innerHTML = `<div class="text-center py-8 text-gray-400"><p class="text-sm">No courses yet.</p><button onclick="showSection('create-course')" class="mt-3 text-lime-600 text-sm font-medium hover:underline">Create your first course →</button></div>`;
+    return;
+  }
+  overviewCourses.innerHTML = myCourses.slice(0, 5).map(c => `
+    <div class="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-lg">📚</div>
+        <div>
+          <p class="font-semibold text-gray-900 text-sm">${c.title}</p>
+          <p class="text-gray-400 text-xs">${c.category} • ${c.totalStudents || 0} students</p>
+        </div>
+      </div>
+      <span class="px-3 py-1 rounded-full text-xs font-semibold ${c.isPublished ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+        ${c.isPublished ? 'Published' : 'Draft'}
+      </span>
+    </div>`).join('');
+}
+
+function renderCoursesTable() {
+  const tbody = document.getElementById('coursesTableBody');
+  if (myCourses.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-gray-400">No courses yet. <button onclick="showSection('create-course')" class="text-lime-600 hover:underline">Create one</button></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = myCourses.map(c => `
+    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+      <td class="px-6 py-4">
+        <div class="font-semibold text-gray-900 text-sm">${c.title}</div>
+        <div class="text-gray-400 text-xs mt-0.5">${c.duration || ''}</div>
+      </td>
+      <td class="px-6 py-4 text-gray-600 text-sm">${c.category}</td>
+      <td class="px-6 py-4">
+        <span class="px-2 py-1 rounded-full text-xs font-medium ${c.level === 'Beginner' ? 'bg-green-100 text-green-700' : c.level === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}">${c.level}</span>
+      </td>
+      <td class="px-6 py-4 text-gray-600 text-sm">${c.totalStudents || 0}</td>
+      <td class="px-6 py-4">
+        <span class="px-3 py-1 rounded-full text-xs font-semibold ${c.isPublished ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}">
+          ${c.isPublished ? 'Published' : 'Draft'}
+        </span>
+      </td>
+      <td class="px-6 py-4">
+        <div class="flex gap-2">
+          <button onclick="togglePublish('${c._id}', ${c.isPublished})" class="text-xs px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-600 transition">
+            ${c.isPublished ? 'Unpublish' : 'Publish'}
+          </button>
+          <button onclick="deleteCourse('${c._id}')" class="text-xs px-3 py-1.5 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+// Create Course
+document.getElementById('createCourseForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('createCourseBtn');
+  btn.textContent = 'Creating...';
+  try {
+    const data = await api.createCourse({
+      title: document.getElementById('cTitle').value,
+      description: document.getElementById('cDescription').value,
+      category: document.getElementById('cCategory').value,
+      level: document.getElementById('cLevel').value,
+      duration: document.getElementById('cDuration').value || '4 Weeks',
+      thumbnail: document.getElementById('cThumbnail').value || ''
+    });
+    newCourseId = data.course._id;
+    document.getElementById('newCourseTitle').textContent = data.course.title;
+    document.getElementById('addLessonPanel').classList.remove('hidden');
+    await loadMyCourses();
+    showToast('Course created! Now add lessons.');
+  } catch(e) {
+    const errEl = document.getElementById('courseFormError');
+    errEl.textContent = e.message;
+    errEl.classList.remove('hidden');
+  }
+  btn.textContent = 'Create Course';
+});
+
+async function addLesson() {
+  if (!newCourseId) return showToast('Create a course first.', 'error');
+  const title = document.getElementById('lTitle').value.trim();
+  if (!title) return showToast('Lesson title is required.', 'error');
+  try {
+    await api.addLesson(newCourseId, {
+      title,
+      content: document.getElementById('lContent').value,
+      videoUrl: document.getElementById('lVideo').value,
+      duration: document.getElementById('lDuration').value || '10 mins'
+    });
+    document.getElementById('lTitle').value = '';
+    document.getElementById('lContent').value = '';
+    document.getElementById('lVideo').value = '';
+    document.getElementById('lDuration').value = '';
+    const list = document.getElementById('lessonsList');
+    list.innerHTML += `<div class="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-xl px-4 py-2"><span>✓</span><span>${title}</span></div>`;
+    showToast('Lesson added!');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function publishCourse() {
+  if (!newCourseId) return;
+  try {
+    await api.togglePublish(newCourseId);
+    await loadMyCourses();
+    showToast('Course published! Students can now enroll.');
+    document.getElementById('addLessonPanel').classList.add('hidden');
+    document.getElementById('createCourseForm').reset();
+    newCourseId = null;
+    showSection('courses');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function togglePublish(id, isPublished) {
+  try {
+    await api.togglePublish(id);
+    await loadMyCourses();
+    renderCoursesTable();
+    showToast(isPublished ? 'Course unpublished.' : 'Course published!');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function deleteCourse(id) {
+  if (!confirm('Are you sure you want to delete this course?')) return;
+  try {
+    await api.deleteCourse(id);
+    await loadMyCourses();
+    renderCoursesTable();
+    renderOverview();
+    showToast('Course deleted.');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+// Assignments
+function populateCourseSelectors() {
+  const assignCourseList = document.getElementById('assignCourseList');
+  const aCourseSel = document.getElementById('aCourseSel');
+  if (myCourses.length === 0) {
+    assignCourseList.innerHTML = `<p class="text-gray-400 text-sm">No courses yet.</p>`;
+    return;
+  }
+  assignCourseList.innerHTML = myCourses.map(c => `
+    <button onclick="loadSubmissionsFor('${c._id}', '${c.title}')"
+      class="px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 hover:border-lime-400 hover:text-lime-600 transition">
+      ${c.title}
+    </button>`).join('');
+  aCourseSel.innerHTML = `<option value="">Select Course</option>` + myCourses.map(c => `<option value="${c._id}">${c.title}</option>`).join('');
+}
+
+async function loadSubmissionsFor(courseId, courseTitle) {
+  const container = document.getElementById('submissionsForGrading');
+  container.innerHTML = `<p class="text-gray-400 text-sm text-center py-4">Loading...</p>`;
+  try {
+    const assignData = await api.getCourseAssignments(courseId);
+    const assignments = assignData.assignments || [];
+    if (assignments.length === 0) {
+      container.innerHTML = `<p class="text-gray-400 text-sm text-center py-6">No assignments for "${courseTitle}".</p>`;
+      return;
+    }
+    let html = '';
+    for (const a of assignments) {
+      const subData = await api.getAssignmentSubmissions(a._id);
+      const subs = subData.submissions || [];
+      html += `<div class="mb-4">
+        <h4 class="font-semibold text-gray-800 text-sm mb-2">${a.title} <span class="text-gray-400 font-normal">(${subs.length} submissions)</span></h4>
+        ${subs.length === 0 ? '<p class="text-gray-400 text-xs pl-2">No submissions yet.</p>' :
+          subs.map(s => `
+            <div class="flex items-center justify-between p-4 border border-gray-100 rounded-xl mb-2">
+              <div>
+                <p class="font-medium text-gray-900 text-sm">${s.student?.name || 'Student'}</p>
+                <p class="text-gray-400 text-xs">${s.student?.email || ''}</p>
+                <p class="text-gray-500 text-xs mt-1 italic">"${(s.content || '').substring(0, 80)}${(s.content||'').length > 80 ? '...' : ''}"</p>
+              </div>
+              <div class="text-right">
+                ${s.isGraded
+                  ? `<span class="bg-green-100 text-green-700 text-sm font-semibold px-3 py-1 rounded-full">${s.grade}/${a.maxMarks}</span>`
+                  : `<button onclick="openGradeModal('${s._id}','${s.student?.name || ''}','${(s.content||'').replace(/'/g,"\\'")}',${a.maxMarks})"
+                      class="bg-lime-500 hover:bg-lime-600 text-black px-4 py-2 rounded-xl text-xs font-semibold transition">Grade</button>`}
+              </div>
+            </div>`).join('')}
+      </div>`;
+    }
+    container.innerHTML = html;
+  } catch(e) { container.innerHTML = `<p class="text-red-400 text-sm">${e.message}</p>`; }
+}
+
+async function createAssignment() {
+  const courseId = document.getElementById('aCourseSel').value;
+  const title = document.getElementById('aTitle').value.trim();
+  const desc = document.getElementById('aDesc').value.trim();
+  const dueDate = document.getElementById('aDueDate').value;
+  const maxMarks = parseInt(document.getElementById('aMaxMarks').value) || 100;
+  if (!courseId || !title || !dueDate) return showToast('Please fill all required fields.', 'error');
+  try {
+    await api.createAssignment({ courseId, title, description: desc, dueDate, maxMarks });
+    document.getElementById('aTitle').value = '';
+    document.getElementById('aDesc').value = '';
+    document.getElementById('aDueDate').value = '';
+    document.getElementById('aMaxMarks').value = '';
+    showToast('Assignment created!');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+let gradeSubId = null;
+function openGradeModal(subId, studentName, content, maxMarks) {
+  gradeSubId = subId;
+  document.getElementById('gradeStudentName').textContent = `Student: ${studentName}`;
+  document.getElementById('gradeContent').textContent = content;
+  document.getElementById('gradeMax').textContent = maxMarks;
+  document.getElementById('gradeInput').value = '';
+  document.getElementById('feedbackInput').value = '';
+  document.getElementById('gradeModal').classList.remove('hidden');
+}
+
+async function saveGrade() {
+  const grade = parseInt(document.getElementById('gradeInput').value);
+  const feedback = document.getElementById('feedbackInput').value;
+  if (isNaN(grade)) return showToast('Enter a valid grade.', 'error');
+  try {
+    document.getElementById('saveGradeBtn').textContent = 'Saving...';
+    await api.gradeSubmission(gradeSubId, { grade, feedback });
+    showToast('Grade saved!');
+    closeModal('gradeModal');
+  } catch(e) { showToast(e.message, 'error'); document.getElementById('saveGradeBtn').textContent = 'Save Grade'; }
+}
+
+// Students
+async function renderStudentSelector() {
+  const sel = document.getElementById('studentCourseSelector');
+  if (myCourses.length === 0) { sel.innerHTML = `<p class="text-gray-400 text-sm">No courses yet.</p>`; return; }
+  sel.innerHTML = myCourses.map(c => `
+    <button onclick="loadStudentsFor('${c._id}')"
+      class="px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-700 hover:border-lime-400 hover:text-lime-600 transition">${c.title}</button>`).join('');
+}
+
+async function loadStudentsFor(courseId) {
+  const tbody = document.getElementById('studentsTableBody');
+  tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-400">Loading...</td></tr>`;
+  try {
+    const d = await api.getCourseStudents(courseId);
+    const enrollments = d.enrollments || [];
+    if (enrollments.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-400">No students enrolled yet.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = enrollments.map(e => `
+      <tr class="border-b border-gray-50 hover:bg-gray-50">
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-lime-500 rounded-full flex items-center justify-center text-black font-bold text-sm">${(e.student?.name||'S')[0]}</div>
+            <span class="font-medium text-gray-900 text-sm">${e.student?.name || 'Student'}</span>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-gray-500 text-sm">${e.student?.email || ''}</td>
+        <td class="px-6 py-4">
+          <div class="flex items-center gap-2">
+            <div class="flex-1 bg-gray-100 rounded-full h-2 w-24">
+              <div class="bg-lime-500 h-2 rounded-full" style="width:${e.progress||0}%"></div>
+            </div>
+            <span class="text-sm font-medium text-gray-700">${e.progress||0}%</span>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-gray-500 text-sm">${new Date(e.enrolledAt).toLocaleDateString()}</td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-400">${e.message}</td></tr>`; }
+}
+
+// Quizzes
+function populateQuizCourseSelector() {
+  const sel = document.getElementById('qCourseSel');
+  sel.innerHTML = `<option value="">Select Course</option>` + myCourses.map(c => `<option value="${c._id}">${c.title}</option>`).join('');
+}
+
+function addQuestion() {
+  questionCount++;
+  const builder = document.getElementById('questionsBuilder');
+  const div = document.createElement('div');
+  div.className = 'border border-gray-200 rounded-xl p-4 space-y-3';
+  div.id = `q-${questionCount}`;
+  div.innerHTML = `
+    <div class="flex items-center justify-between">
+      <p class="font-semibold text-gray-700 text-sm">Question ${questionCount}</p>
+      <button type="button" onclick="this.closest('.border').remove()" class="text-red-400 hover:text-red-600 text-xs">Remove</button>
+    </div>
+    <input type="text" placeholder="Question text" class="q-question w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400">
+    <div class="grid grid-cols-2 gap-2">
+      <input type="text" placeholder="Option A" class="q-option w-full border border-gray-200 rounded-xl px-3 py-2 text-sm">
+      <input type="text" placeholder="Option B" class="q-option w-full border border-gray-200 rounded-xl px-3 py-2 text-sm">
+      <input type="text" placeholder="Option C" class="q-option w-full border border-gray-200 rounded-xl px-3 py-2 text-sm">
+      <input type="text" placeholder="Option D" class="q-option w-full border border-gray-200 rounded-xl px-3 py-2 text-sm">
+    </div>
+    <div class="flex items-center gap-3">
+      <label class="text-sm text-gray-600 font-medium">Correct Answer:</label>
+      <select class="q-correct border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white">
+        <option value="0">Option A</option>
+        <option value="1">Option B</option>
+        <option value="2">Option C</option>
+        <option value="3">Option D</option>
+      </select>
+    </div>`;
+  builder.appendChild(div);
+}
+
+async function createQuiz() {
+  const courseId = document.getElementById('qCourseSel').value;
+  const title = document.getElementById('qTitle').value.trim();
+  const timeLimit = parseInt(document.getElementById('qTimeLimit').value) || 30;
+  const passingScore = parseInt(document.getElementById('qPassingScore').value) || 60;
+  if (!courseId || !title) return showToast('Title and course are required.', 'error');
+
+  const qDivs = document.querySelectorAll('#questionsBuilder > div');
+  const questions = [];
+  for (const div of qDivs) {
+    const q = div.querySelector('.q-question').value.trim();
+    const opts = [...div.querySelectorAll('.q-option')].map(o => o.value.trim()).filter(o => o);
+    const correct = parseInt(div.querySelector('.q-correct').value);
+    if (q && opts.length >= 2) questions.push({ question: q, options: opts, correctAnswer: correct, marks: 1 });
+  }
+  if (questions.length === 0) return showToast('Add at least one question.', 'error');
+  try {
+    await api.createQuiz({ courseId, title, questions, timeLimit, passingScore });
+    showToast('Quiz created successfully!');
+    document.getElementById('qTitle').value = '';
+    document.getElementById('questionsBuilder').innerHTML = '';
+    questionCount = 0;
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function logout() { clearAuth(); window.location.href = '/pages/login.html'; }
+</script>
+</body>
+</html>
